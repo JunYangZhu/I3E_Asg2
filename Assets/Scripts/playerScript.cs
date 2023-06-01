@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class playerScript : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class playerScript : MonoBehaviour
     bool sprint = false;
     int jumps = 2;
     public float jumpForce = 100f;
+
+    public int sceneIndex;
 
 
     /// <summary>
@@ -91,6 +94,10 @@ public class playerScript : MonoBehaviour
         {
             jumps = 2;
         }
+        if (collision.gameObject.tag == "Exit")
+        {
+            SceneManager.LoadScene(sceneIndex);
+        }
     }
 
     // Start is called before the first frame update
@@ -118,5 +125,10 @@ public class playerScript : MonoBehaviour
         transform.rotation = Quaternion.Euler(
             transform.rotation.eulerAngles
             + new Vector3(0, rotationInput.y, 0) * rotationSpeed);
+    }
+
+    void Awake()
+    {
+        DontDestroyOnLoad(gameObject);
     }
 }
