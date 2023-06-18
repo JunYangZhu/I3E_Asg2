@@ -113,6 +113,7 @@ GameObject:
   - component: {fileID: 8353463738279983752}
   - component: {fileID: 8353463738279983755}
   - component: {fileID: 8353463738279983754}
+  - component: {fileID: 3602755985661346003}
   m_Layer: 0
   m_Name: player
   m_TagString: Player
@@ -216,7 +217,6 @@ MonoBehaviour:
   sprintSpeed: 0.25
   jumpForce: 100
   sceneIndex: 1
-  playerPrefab: {fileID: 8353463738279983749}
   head: {fileID: 8353463736665086267}
   rotationSpeed: 0.5
 --- !u!114 &8353463738279983755
@@ -265,6 +265,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!95 &3602755985661346003
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8353463738279983749}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 32fd1adebd9a3f048b7719ee31a6680b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8353463738411230752
 GameObject:
   m_ObjectHideFlags: 0

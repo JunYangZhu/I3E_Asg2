@@ -79,6 +79,18 @@ public class playerScript : MonoBehaviour
         }
     }
 
+    void playerDeath()
+    {
+        GetComponent<Animator>().SetTrigger("death");
+    }
+
+    void playerDead()
+    {
+        GetComponent<Animator>().SetTrigger("reset");
+        rotationSpeed = 0f;
+        movementSpeed = 0f;
+
+    }
 
     /// <summary>
     /// Code to enable events after collision
@@ -89,6 +101,8 @@ public class playerScript : MonoBehaviour
         if (collision.gameObject.tag == "Collectible")
         {
             Debug.Log("Collected" + collision.gameObject.name);
+
+            collision.gameObject.GetComponent<coinScript>().Collected();
         }
         if (collision.gameObject.tag == "Ground")
         {
@@ -97,6 +111,10 @@ public class playerScript : MonoBehaviour
         if (collision.gameObject.tag == "Exit")
         {
             SceneManager.LoadScene(sceneIndex);
+        }
+        if (collision.gameObject.tag == "Lethal")
+        {
+            playerDeath();
         }
     }
 
