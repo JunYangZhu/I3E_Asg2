@@ -276,7 +276,7 @@
                     "name": "",
                     "id": "cc4acd91-8fb5-4895-9a48-c1b010e26515",
                     "path": "<Keyboard>/leftShift",
-                    "interactions": "",
+                    "interactions": "Hold",
                     "processors": "",
                     "groups": "",
                     "action": "Sprint",

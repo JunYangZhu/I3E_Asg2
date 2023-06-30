@@ -8,6 +8,7 @@ TagManager:
   - Ground
   - Exit
   - Lethal
+  - Entry
   layers:
   - Default
   - TransparentFX

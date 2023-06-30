@@ -7,13 +7,34 @@ using UnityEngine.SceneManagement;
 
 public class playerScript : MonoBehaviour
 {
+    /// <summary>
+    /// Player health setup
+    /// </summary>
+    public int maxHealth = 5;
+    public int currentHealth;
+    public HealthBar healthBar;
+
+    /// <summary>
+    /// Player stamina setup (for sprinting)
+    /// </summary>
+    public float maxStamina = 100;
+    public float recoverStamina = 2;
+    public float consumeStamina = 10;
+    public float currentStamina;
+    public staminaBar staminaBar;
+
+    /// <summary>
+    /// Player in game menu setup
+    /// </summary>
+    public deathMenu deathMenu;
+
 
     /// <summary>
     /// Enable player movement using Vector3, and create variables for movement speed and jumping
     /// </summary>
     Vector3 movementInput = Vector3.zero;
-    public float regularSpeed = 0.15f;
-    public float sprintSpeed = 0.25f;
+    public float regularSpeed = 0.05f;
+    public float sprintSpeed = 0.5f;
     float movementSpeed = 0.15f;
     bool sprint = false;
     int jumps = 2;
@@ -55,15 +76,10 @@ public class playerScript : MonoBehaviour
     /// <param name="value"></param>
     void OnSprint(InputValue value)
     {
-        if (sprint != true)
+        if (currentStamina >0)
         {
-            movementSpeed = sprintSpeed;
             sprint = true;
-        }
-        else
-        {
-            movementSpeed = regularSpeed;
-            sprint = false;
+            movementSpeed = sprintSpeed;
         }
     }
 
@@ -74,7 +90,7 @@ public class playerScript : MonoBehaviour
     {
         if (jumps > 0)
         {
-            GetComponent<Rigidbody>().AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            GetComponent<Rigidbody>().AddForce(transform.up * jumpForce * 2, ForceMode.Impulse);
             --jumps;
         }
     }
@@ -112,16 +128,34 @@ public class playerScript : MonoBehaviour
         {
             SceneManager.LoadScene(sceneIndex);
         }
+        if (collision.gameObject.tag == "Entry")
+        {
+            SceneManager.LoadScene(1);
+        }
         if (collision.gameObject.tag == "Lethal")
+        {
+            TakeDamage();
+        }
+    }
+
+    void TakeDamage()
+    {
+        currentHealth -= 1;
+        if (currentHealth <= 0)
         {
             playerDeath();
         }
+        healthBar.SetHealth(currentHealth);
     }
 
     // Start is called before the first frame update
     void Start()
     {
         movementSpeed = regularSpeed;
+        currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
+        currentStamina = maxStamina;
+        staminaBar.SetMaxStamina(maxStamina);
     }
 
     // Update is called once per frame
@@ -143,6 +177,24 @@ public class playerScript : MonoBehaviour
         transform.rotation = Quaternion.Euler(
             transform.rotation.eulerAngles
             + new Vector3(0, rotationInput.y, 0) * rotationSpeed);
+
+        if (currentStamina <= 0)
+        {
+            sprint = false;
+            movementSpeed = regularSpeed;
+        }
+        if (sprint == true)
+        {
+            Debug.Log(currentStamina);
+            currentStamina -= consumeStamina * Time.deltaTime;
+            Debug.Log(currentStamina);
+            staminaBar.SetStamina(currentStamina);
+        }
+        else
+        {
+            currentStamina += recoverStamina * Time.deltaTime;
+            staminaBar.SetStamina(currentStamina);
+        }
     }
 
     void Awake()
