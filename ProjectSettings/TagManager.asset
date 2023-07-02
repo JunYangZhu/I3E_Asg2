@@ -9,6 +9,7 @@ TagManager:
   - Exit
   - Lethal
   - Entry
+  - bullet
   layers:
   - Default
   - TransparentFX

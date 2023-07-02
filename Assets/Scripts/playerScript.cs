@@ -7,6 +7,27 @@ using UnityEngine.SceneManagement;
 
 public class playerScript : MonoBehaviour
 {
+    public Vector3 position;
+
+    public GameObject winMenu;
+
+    public GameObject gun;
+
+    /// <summary>
+    /// Set raycast interaction distance
+    /// </summary>
+    float raycastDistance = 3f;
+    bool interact = false;
+
+    /// <summary>
+    /// Set collectible value triggers
+    /// </summary>
+    bool battery1 = false;
+    bool battery2 = false;
+    bool battery3 = false;
+    bool card = false;
+    bool droid = false;
+
     /// <summary>
     /// Player health setup
     /// </summary>
@@ -26,7 +47,7 @@ public class playerScript : MonoBehaviour
     /// <summary>
     /// Player in game menu setup
     /// </summary>
-    public deathMenu deathMenu;
+    public GameObject deathMenu;
 
 
     /// <summary>
@@ -95,17 +116,30 @@ public class playerScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Trigger death animation
+    /// </summary>
     void playerDeath()
     {
+        GetComponent<Animator>().applyRootMotion = false;
         GetComponent<Animator>().SetTrigger("death");
+        deathMenu.SetActive(true);
+        rotationSpeed = 0f;
+        movementSpeed = 0f;
     }
-
+    
+    /// <summary>
+    /// Reset player
+    /// </summary>
     void playerDead()
     {
         GetComponent<Animator>().SetTrigger("reset");
-        rotationSpeed = 0f;
-        movementSpeed = 0f;
+        GetComponent<Animator>().applyRootMotion = true;
+    }
 
+    public void Win()
+    {
+        winMenu.SetActive(true);
     }
 
     /// <summary>
@@ -114,23 +148,9 @@ public class playerScript : MonoBehaviour
     /// <param name="collision"></param>
     public void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Collectible")
-        {
-            Debug.Log("Collected" + collision.gameObject.name);
-
-            collision.gameObject.GetComponent<coinScript>().Collected();
-        }
         if (collision.gameObject.tag == "Ground")
         {
             jumps = 2;
-        }
-        if (collision.gameObject.tag == "Exit")
-        {
-            SceneManager.LoadScene(sceneIndex);
-        }
-        if (collision.gameObject.tag == "Entry")
-        {
-            SceneManager.LoadScene(1);
         }
         if (collision.gameObject.tag == "Lethal")
         {
@@ -138,6 +158,9 @@ public class playerScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Decrease health value when taking damage
+    /// </summary>
     void TakeDamage()
     {
         currentHealth -= 1;
@@ -151,6 +174,7 @@ public class playerScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Set player initial values
         movementSpeed = regularSpeed;
         currentHealth = maxHealth;
         healthBar.SetMaxHealth(maxHealth);
@@ -161,6 +185,7 @@ public class playerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        position = transform.position;
         Vector3 forwardDir = transform.forward;
         forwardDir *= movementInput.y;
 
@@ -185,20 +210,111 @@ public class playerScript : MonoBehaviour
         }
         if (sprint == true)
         {
-            Debug.Log(currentStamina);
             currentStamina -= consumeStamina * Time.deltaTime;
-            Debug.Log(currentStamina);
             staminaBar.SetStamina(currentStamina);
         }
         else
         {
-            currentStamina += recoverStamina * Time.deltaTime;
-            staminaBar.SetStamina(currentStamina);
+            if (currentStamina < 100)
+            {
+                currentStamina += recoverStamina * Time.deltaTime;
+                staminaBar.SetStamina(currentStamina);
+            }
         }
+
+        RaycastHit hitInfo;
+        if (Physics.Raycast(transform.position, transform.forward, out hitInfo, raycastDistance))
+        {
+            if (hitInfo.transform.name == "fuse box")
+            {
+                if (interact && battery1 && battery2 && battery3)
+                {
+                    hitInfo.transform.GetComponent<fuseScript>().isPlaced();
+                }
+            }
+            if (hitInfo.transform.tag == "Exit")
+            {
+                if (interact && battery1 && battery2 && battery3)
+                {
+                    GetComponent<AudioSource>().Play();
+                    SceneManager.LoadScene(sceneIndex);
+                }
+            }
+            if (hitInfo.transform.tag == "Entry")
+            {
+                if (interact)
+                {
+                    GetComponent<AudioSource>().Play();
+                    SceneManager.LoadScene(1);
+                }
+            }
+            if (hitInfo.transform.tag == "Finish")
+            {
+                if (interact)
+                {
+                    rotationSpeed = 0f;
+                    movementSpeed = 0f;
+                    GameObject stats = GameObject.Find("Stats");
+                    stats.SetActive(false);
+                    gun.SetActive(false);
+                    transform.position = new Vector3(-42, 0, 11);
+                    transform.rotation = new Quaternion(0, -0.5f, 0, 1);
+                    GameObject shuttle = GameObject.Find("SpaceShuttle");
+                    shuttle.GetComponent<Animator>().SetTrigger("Escape");
+                }
+            }
+            if (hitInfo.transform.name == "card scan")
+            {
+                if (interact && card)
+                {
+                    hitInfo.transform.GetComponent<scanScript>().isPlaced();
+                }
+            }
+            if (hitInfo.transform.tag == "Collectible")
+            { 
+                if (interact)
+                {
+                    if (hitInfo.transform.name == "Battery (1)")
+                    {
+                        battery1 = true;
+                    }
+                    if (hitInfo.transform.name == "Battery (2)")
+                    {
+                        battery2 = true;
+                    }
+                    if (hitInfo.transform.name == "Battery (3)")
+                    {
+                        battery3 = true;
+                    }
+                    if (hitInfo.transform.name == "card")
+                    {
+                        card = true;
+                    }
+                    if (hitInfo.transform.name == "BAKE")
+                    {
+                        droid = true;
+                        gun.SetActive(true);
+                        print(droid);
+
+                    }
+
+                    hitInfo.transform.GetComponent<collectibleScript>().Collected();
+                }
+            }
+        }
+        interact = false;
     }
 
+    /// <summary>
+    /// Prevent game manager and player from being destroyed when changing scenes
+    /// </summary>
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
+    }
+
+    void OnFire()
+    {
+        interact = true;
     }
 }
