@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class lockedScript : MonoBehaviour
 {
+    /// <summary>
+    /// trigger auto door animation
+    /// </summary>
     public void openDoor()
     {
         GetComponent<Animator>().SetTrigger("isOpen");

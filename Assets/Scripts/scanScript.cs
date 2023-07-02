@@ -7,6 +7,9 @@ public class scanScript : MonoBehaviour
     public GameObject card;
     public GameObject door;
 
+    /// <summary>
+    /// trigger audio and door animation when interacted
+    /// </summary>
     public void isPlaced()
     {
         GetComponent<AudioSource>().Play();

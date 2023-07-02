@@ -137,6 +137,9 @@ public class playerScript : MonoBehaviour
         GetComponent<Animator>().applyRootMotion = true;
     }
 
+    /// <summary>
+    /// open win menu
+    /// </summary>
     public void Win()
     {
         winMenu.SetActive(true);
@@ -171,6 +174,9 @@ public class playerScript : MonoBehaviour
         healthBar.SetHealth(currentHealth);
     }
 
+    /// <summary>
+    /// set initial player values
+    /// </summary>
     // Start is called before the first frame update
     void Start()
     {
@@ -313,6 +319,9 @@ public class playerScript : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    /// <summary>
+    /// allow interaction on click
+    /// </summary>
     void OnFire()
     {
         interact = true;

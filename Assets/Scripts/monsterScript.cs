@@ -18,6 +18,9 @@ public class monsterScript : MonoBehaviour
 
     Vector3 position;
 
+    /// <summary>
+    /// lower health and trigger animation when hit
+    /// </summary>
     void Hit()
     {
         currentHealth -= 1;
@@ -28,11 +31,18 @@ public class monsterScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// trigger death animation
+    /// </summary>
     void Dead()
     {
         gameObject.GetComponent<Animator>().SetTrigger("isDead");
     }
 
+    /// <summary>
+    /// trigger hit function when colliding with bullet
+    /// </summary>
+    /// <param name="collision"></param>
     public void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "bullet")
@@ -41,11 +51,17 @@ public class monsterScript : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// destroy gameobject after death animation
+    /// </summary>
     void Destroy()
     {
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// set initial health and search player
+    /// </summary>
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +69,9 @@ public class monsterScript : MonoBehaviour
         player = GameObject.Find("player(Clone)");
     }
 
+    /// <summary>
+    /// check for player position and chase when nearby
+    /// </summary>
     void Update()
     {
         position = player.GetComponent<playerScript>().position;

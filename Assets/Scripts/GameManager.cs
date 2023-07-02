@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    /// <summary>
+    /// variables for fade transition
+    /// </summary>
     public Image fadeImage;
     private Color fadeColor = new Color();
 
@@ -16,6 +19,9 @@ public class GameManager : MonoBehaviour
     private float fadeDuration = 1.5f;
     private float fadeTimer;
 
+    /// <summary>
+    /// player prefab for spawning
+    /// </summary>
     public GameObject playerPrefab;
 
     GameObject player;
@@ -27,6 +33,10 @@ public class GameManager : MonoBehaviour
 
     private int loadIndex;
 
+    /// <summary>
+    /// load scene and trigger transition
+    /// </summary>
+    /// <param name="index"></param>
     public void LoadScene(int index)
     {
         loadIndex = index;
@@ -36,6 +46,9 @@ public class GameManager : MonoBehaviour
         onFadeIn = false;
     }
 
+    /// <summary>
+    /// prevents gameobject from destroying on load
+    /// </summary>
     void Awake()
     {
         if (instance != null && instance != this)
@@ -51,6 +64,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spawn player if no player
+    /// </summary>
+    /// <param name="current"></param>
+    /// <param name="next"></param>
     void SpawnPlayer(Scene current, Scene next)
     {
         onFadeIn = true;
@@ -69,6 +87,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// function for fade out
+    /// </summary>
     private void FadeOut()
     {
         fadeTimer += Time.deltaTime;
@@ -82,6 +103,9 @@ public class GameManager : MonoBehaviour
         fadeImage.color = fadeColor;
     }
 
+    /// <summary>
+    /// function for fade in
+    /// </summary>
     private void FadeIn()
     {
         fadeTimer -= Time.deltaTime;

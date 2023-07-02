@@ -5,10 +5,17 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
+    /// <summary>
+    /// variable to link health bar to script
+    /// </summary>
     public Slider slider;
     public Gradient gradient;
     public Image fill;
 
+    /// <summary>
+    /// Set health to max health
+    /// </summary>
+    /// <param name="health"></param>
     // Start is called before the first frame update
     public void SetMaxHealth(int health)
     {
@@ -18,6 +25,10 @@ public class HealthBar : MonoBehaviour
         fill.color = gradient.Evaluate(1f);
     }
 
+    /// <summary>
+    /// lower slider value when health decreases
+    /// </summary>
+    /// <param name="health"></param>
     // Update is called once per frame
     public void SetHealth(int health)
     {
